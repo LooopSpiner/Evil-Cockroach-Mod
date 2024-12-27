@@ -1,0 +1,55 @@
+:: Widget Bug Animation [widget]
+<<widget 'appendBug'>>
+<script>
+    var recordTime;
+    var recordId = recordId || V.saveID;
+    var imgList = document.getElementsByClassName('houseBug');
+
+    if (recordId !== V.saveID){
+        recordTime = V.timeStamp;
+        recordId = V.saveID;
+    }
+    else{
+        recordTime = recordTime || V.timeStamp;
+    }
+    
+    if (V.timeStamp - recordTime >= 60*60 && imgList.length < 10){
+        createMovingImage();
+        recordTime = V.timeStamp;
+    }
+</script>
+<</widget>>
+
+<<widget 'bugSetting'>>
+    <br><br>
+    <span class = "gold" style = 'font-size = large;font-weight: bold;'>~ 蟑螂mod ~</span>
+    <br>
+    设置你的蟑螂（桌宠？）种类：<br>
+    <label>
+        <<radiobutton "$houseBug" "cockroach" autocheck>>设为 蟑螂<br>
+    </label>
+    <label>
+        <<radiobutton "$houseBug" "momoyoFumo" autocheck>>设为 百百世fumo<br>
+    </label>
+    <label>
+        <<radiobutton "$houseBug" "cat" autocheck>>设为 猫猫<br>
+    </label>
+    <label>
+        <<radiobutton "$houseBug" "cirno" autocheck>>设为 琪露诺<br>
+    </label>
+    <label>
+        <<radiobutton "$houseBug" "normalMode" autocheck>>设为 自定义图片（正常行走方式）<br>
+    </label>
+    <label>
+        <<radiobutton "$houseBug" "bugMode" autocheck>>设为 自定义图片（虫类行走方式）<br>
+    </label>
+    <br>
+    
+    <label>
+        设置你的蟑螂（桌宠啦！）尺寸：<br>
+        <<set $bugScale = $bugScale || 1>>
+        <<numberslider "$bugScale" $bugScale 0.1 3 0.05>><br>
+    </label>
+    <br>[[确定选项|$passage]]
+
+<</widget>>

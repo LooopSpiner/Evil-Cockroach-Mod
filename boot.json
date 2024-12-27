@@ -1,0 +1,45 @@
+{
+    "name": "蟑螂啊啊啊",
+    "version": "1.0.0",
+    "styleFileList": [
+    ],
+    "scriptFileList": [
+        "game/bug_function.js",
+        "game/bug_sf.js"
+    ],
+    "tweeFileList": [
+        "game/bug_widget.twee"
+
+    ],
+    "imgFileList": [
+        "img/misc/bugMod/cockroach/stop.gif",
+        "img/misc/bugMod/cockroach/running.gif",
+        "img/misc/bugMod/cockroach/death.gif",
+        "img/misc/bugMod/cat/stop.gif",
+        "img/misc/bugMod/cat/running.gif",
+        "img/misc/bugMod/cat/death.gif",
+        "img/misc/bugMod/momoyoFumo/stop.gif",
+        "img/misc/bugMod/momoyoFumo/running.gif",
+        "img/misc/bugMod/momoyoFumo/death.gif",
+        "img/misc/bugMod/bugMode/stop.gif",
+        "img/misc/bugMod/bugMode/running.gif",
+        "img/misc/bugMod/bugMode/death.gif",
+        "img/misc/bugMod/nomalMode/stop.gif",
+        "img/misc/bugMod/nomalMode/running.gif",
+        "img/misc/bugMod/nomalMode/death.gif",
+        "img/misc/bugMod/cirno/running.gif",
+        "img/misc/bugMod/cirno/stop.gif",
+        "img/misc/bugMod/cirno/death.gif"
+
+    ],
+    "addonPlugin": [
+    {
+      "modName": "ModLoader DoL ImageLoaderHook",
+      "addonName": "ImageLoaderAddon",
+      "modVersion": "^2.3.0",
+      "params": []
+    }
+    ],
+    "additionFile": [
+    ]
+  }
