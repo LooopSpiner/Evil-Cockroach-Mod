@@ -2,21 +2,40 @@
 <<widget 'appendBug'>>
 <script>
     var recordTime;
-    var recordId = recordId || V.saveID;
-    var imgList = document.getElementsByClassName('houseBug');
+    var recordId = recordId || V.saveId;
+    V.imgList = document.getElementsByClassName('houseBug');
+    V.bugLimit = V.bugLimit || 10;
 
-    if (recordId !== V.saveID){
+    if (recordId !== V.saveId){
         recordTime = V.timeStamp;
-        recordId = V.saveID;
+        recordId = V.saveId;
     }
     else{
         recordTime = recordTime || V.timeStamp;
     }
-    
-    if (V.timeStamp - recordTime >= 60*60 && imgList.length < 10){
+
+    /* 
+        检查当前时间戳与上次记录时间的差是否大于等于1小时，
+        且当前图片数量小于最大限制V.bugLimit。
+        如果满足条件，则创建新的图片。
+    */
+    if (V.timeStamp - recordTime >= 60 * 60 && V.imgList.length < V.bugLimit) {
         createMovingImage();
         recordTime = V.timeStamp;
     }
+
+    /* 
+        检查当前图片数量是否超过最大限制V.bugLimit。
+        如果超过，则计算多余的数量并删除多余的图片。
+    */
+    if (V.imgList.length > V.bugLimit) {
+    var excessCount = V.imgList.length - V.bugLimit;
+    
+        for (var i = 0; i < excessCount; i++) {
+            V.imgList[0].remove();
+        }
+    }
+
 </script>
 <</widget>>
 
@@ -48,8 +67,52 @@
     <label>
         设置你的蟑螂（桌宠啦！）尺寸：<br>
         <<set $bugScale = $bugScale || 1>>
-        <<numberslider "$bugScale" $bugScale 0.1 3 0.05>><br>
+        <<numberslider "$bugScale" $bugScale 0.1 5 0.05>><br>
     </label>
-    <br>[[确定选项|$passage]]
+    <label>
+        设置你的蟑螂个数上限：<br>
+        <<set $bugLimit = $bugLimit || 10>>
+        <<numberslider "$bugLimit" $bugLimit 1 100 1>><br>
+    </label>
+    <br>
+    ~ 目前有 <span id="petCount">$imgList.length</span> 只桌宠 ~
+    <br>
+    <<link '一键删除所有桌宠'>>
+        <<run 
+        if(V.imgList.length >= 1){
+            $("img.houseBug").remove();updatePetCount();
+        }>>
+    <</link>>
+    <br><<link '产生一只桌宠！'>><<run createMovingImage(); updatePetCount();>><</link>>
+    <br><<link '删除一只桌宠！'>><<run V.imgList[0].remove(); updatePetCount();>><</link>>
+    <br><br>
+    <<link '抽盲盒'>><<run 
+        T.recordBug = V.houseBug;
+        T.bugArr = ["momoyoFumo","cockroach","cirno","cat"];
+
+        if(V.enableNormalMode){
+            T.bugArr.push('normalMode');
+        }
+        if (V.enableBugMode) {
+            T.bugArr.push('bugMode');
+        }
+
+        V.houseBug = T.bugArr[Math.floor(Math.random()*T.bugArr.length)];
+        createMovingImage();
+        updatePetCount();
+        V.houseBug = T.recordBug;
+
+    >><</link>><span class = "gold"> ☆ 以下设置请在替换对应图片后选择。若未替换自定义图片，请勿勾选。</span><br>
+    <<checkbox "$enableNormalMode" false true autocheck>>盲盒中可以抽到自定义图片（正常行走方式）<br>
+    <<checkbox "$enableBugMode" false true autocheck>>盲盒中可以抽到自定义图片（虫类行走方式）
+
+    <br><br>[[确定选项|$passage]]
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updatePetCount();
+        });
+    </script>
 
 <</widget>>

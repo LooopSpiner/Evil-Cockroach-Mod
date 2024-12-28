@@ -1,3 +1,4 @@
+// 确保 isBug 函数声明在前
 window.isBug = function isBug() {
   if (["cockroach", 'bug'].includes(V.houseBug)) {
     return true;
@@ -9,21 +10,31 @@ window.isBug = function isBug() {
 window.createMovingImage = function createMovingImage() {
   window.modImgLoaderHooker.addDynamicImageTagReplacePassage(V.passage);
   const img = document.createElement('img');
-  img.style.position = 'absolute';
+  img.style.position = 'fixed';
+  img.style.userSelect = 'none';
   document.body.appendChild(img);
+  img.className = 'houseBug';
+
+  // 使用 isBug() 函数的返回值，而不是重新赋值给 isBug
+  const bugStatus = isBug(); // 调用 isBug 函数并赋值给 bugStatus
 
   let lastRotation = 0;
   let isDead = false; // 确保 isDead 是全局可访问的
   V.houseBug = V.houseBug || "cirno";
   let bugScale = V.bugScale || 1;
-  if (!isBug()){
+
+  if (!bugStatus) {
     img.style.zIndex = 5000;
   }
 
-  if (V.bugScale) {
-    img.style.transform = 'scaleX(' + bugScale + ")scaleY(" + bugScale + ")";
-  } else if (isBug()) {
+  if (bugStatus && bugScale == 1) {
     img.style.scale = Math.random() * 1.5 + 1;
+  }
+  else if(bugStatus){
+    img.style.scale = bugScale;
+  }
+  else if (V.bugScale) {
+    img.style.transform = 'scaleX(' + bugScale + ")scaleY(" + bugScale + ")";
   }
 
   /* 获取base64图片路径 */
@@ -78,7 +89,7 @@ window.createMovingImage = function createMovingImage() {
         img.style.left = x + 'px';
         img.style.top = y + 'px';
 
-        if (isBug()) {
+        if (bugStatus) {
           // 实时计算旋转角度
           if (t < 1) {
             const dx = 2 * (1 - t) * (midX - startX) + 2 * t * (targetX - midX);
@@ -119,7 +130,7 @@ window.createMovingImage = function createMovingImage() {
       }
 
       img.src = isMoving ? imgs.running : imgs.stop;
-      if (!isMoving && isBug()) {
+      if (!isMoving && bugStatus) {
         img.style.transform = `rotate(${lastRotation}deg)`; // 停止时保持最后的旋转角度
       }
     }
@@ -134,6 +145,7 @@ window.createMovingImage = function createMovingImage() {
 
       setTimeout(() => {
         img.remove(); // 在一段时间后移除图片
+        updatePetCount();
         isDead = false; // 重置死亡状态，允许后续逻辑再次运行（如果需要）
       }, 1000); // 持续显示死亡动图 5000 毫秒
     }
@@ -145,3 +157,11 @@ window.createMovingImage = function createMovingImage() {
   });
 };
 
+window.updatePetCount = function updatePetCount() {
+  var currentCount = document.getElementsByClassName('houseBug').length;
+  const petCount = document.getElementById('petCount');
+  if(petCount){
+    petCount.innerText = currentCount;
+  }
+  V.imgList = document.getElementsByClassName('houseBug');
+}
